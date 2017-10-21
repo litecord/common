@@ -17,6 +17,13 @@ to request and send commands between Litecord components.
 | 5 | `RESPONSE` | Server |
 | 6 | `DISPATCH` | Client |
 
+# Close code table
+| Close Code | Meaning |
+|:----------:|:-------:|
+| 4001 | Authentication Failed |
+| 4002 | Requesting without authentication |
+| 4003 | Heartbeat timeout |
+
 # General packet format
 
 ```javascript
