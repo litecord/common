@@ -67,6 +67,9 @@ and they can start heartbeating.
 ## OP 2 Heartbeat
 
 Should be sent by the client every `hb_interval` milliseconds.
+The connection will close if the client tries to heartbeat before
+sending `OP 1 HELLO ACK`.
+
 The server will assume client death if the client
 doesnt send a heartbeat packet in that time period.
 
@@ -91,6 +94,63 @@ Sent by the server everytime it receives an `OP 2 HEARTBEAT`.
 
 ## OP 4 Request
 
+Sent by the client to request something from the server.
+The actual payload follows a format, but the allowed content is defined
+by the implementation.
+
+### Fields
+
+All fields are required
+ - `w` [str]: What to request.
+ - `a` [list[any]]: Arguments to the request.
+ - `n` [any]: Request nonce.
+
+### Example
+```
+{
+    "op": 4,
+    "w": "ANYTHING",
+    "a": [],
+    "n": 1
+}
+```
+
 ## OP 5 Response
 
+Sent by the server to indicate a response sent by the client.
+
+### Fields
+ - `n` [any]: The nonce sent by the client in `OP 4 REQUEST`.
+ - `r` [any]: Response data.
+
+### Example
+```javascript
+{
+    "op": 5,
+    "n": 1,
+    "r": ["you're gay"]
+}
+```
+
 ## OP 6 Dispatch
+
+Sent by the client to request something it knows it won't get
+a reply(`OP 5 RESPONSE`) to.
+
+### Fields
+ - Same as `OP 4 REQUEST`, but without `n`.
+
+### Example
+
+```javascript
+{
+    "op": 6,
+    "w": "ANYTHING",
+    "a": []
+}
+```
+
+TODO
+------
+
+Maybe add a way to use zlib for payload compression?
