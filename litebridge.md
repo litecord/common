@@ -36,6 +36,11 @@ to request and send commands between Litecord components.
 The rest of the payload examples assume those fields
 are in them.
 
+# Note about reconnecting
+
+If a client's websocket fails for any reason, it should wait a random
+amount of time (minimum 1 second), and then reconnect.
+
 ## OP 0 Hello
 
 Sent by the server on the start of the websocket connection
