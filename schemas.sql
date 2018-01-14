@@ -20,7 +20,7 @@ CREATE TABLE users (
 
 CREATE TABLE guilds (
     id text PRIMARY KEY NOT NULL,
-    name varchar(100) NOT NULL, /* TODO: get max guild name size in discord */
+    name varchar(100) NOT NULL,
     icon text,
     splash text,
     owner_id text NOT NULL REFERENCES users (id),
