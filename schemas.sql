@@ -1,7 +1,7 @@
 CREATE TABLE users (
     /* Basic user information */
     id text PRIMARY KEY NOT NULL,
-    username varchar(80) NOT NULL,
+    username varchar(32) NOT NULL,
     discriminator varchar(4) NOT NULL,
     avatar text,
 
@@ -20,7 +20,7 @@ CREATE TABLE users (
 
 CREATE TABLE guilds (
     id text PRIMARY KEY NOT NULL,
-    name varchar(255) NOT NULL, /* TODO: get max guild name size in discord */
+    name varchar(100) NOT NULL, /* TODO: get max guild name size in discord */
     icon text,
     splash text,
     owner_id text NOT NULL REFERENCES users (id),
@@ -31,7 +31,7 @@ CREATE TABLE guilds (
     
     verification_level int DEFAULT 0,
     default_message_notifications int,
-    explicit_content_filter boolean, /* Does this exist? */
+    explicit_content_filter int DEFAULT 0, /* goes from 0-2 */
     mfa_level int DEFAULT 0,
  
     features text, /* JSON encoded data, like "[\"VANITY_URL\"]" */
@@ -48,7 +48,7 @@ CREATE TABLE channels (
     id text PRIMARY KEY NOT NULL,
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
     channel_type int NOT NULL,
-    name varchar(255) NOT NULL,
+    name varchar(100) NOT NULL,
     position int NOT NULL,
     topic varchar(1024),
 );
@@ -56,6 +56,7 @@ CREATE TABLE channels (
 CREATE TABLE roles (
     id text PRIMARY KEY NOT NULL
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
+    name varchar(100) NOT NULL,
     position int NOT NULL,
     permissions int NOT NULL,
 );
