@@ -54,7 +54,7 @@ CREATE TABLE channels (
 );
 
 CREATE TABLE roles (
-    id text PRIMARY KEY NOT NULL
+    id text PRIMARY KEY NOT NULL,
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
     name varchar(100) NOT NULL,
     position int NOT NULL,
