@@ -15,7 +15,7 @@ CREATE TABLE users (
     /* Private information */
     phone varchar(60) DEFAULT '',
     password_hash text NOT NULL,
-    password_salt text NOT NULL,
+    password_salt text NOT NULL
 );
 
 CREATE TABLE guilds (
@@ -34,7 +34,7 @@ CREATE TABLE guilds (
     explicit_content_filter int DEFAULT 0, /* goes from 0-2 */
     mfa_level int DEFAULT 0,
  
-    features text, /* JSON encoded data, like "[\"VANITY_URL\"]" */
+    features text /* JSON encoded data, like "[\"VANITY_URL\"]" */
 );
 
 CREATE TABLE members (
@@ -50,7 +50,7 @@ CREATE TABLE channels (
     channel_type int NOT NULL,
     name varchar(100) NOT NULL,
     position int NOT NULL,
-    topic varchar(1024),
+    topic varchar(1024)
 );
 
 CREATE TABLE roles (
@@ -58,7 +58,7 @@ CREATE TABLE roles (
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
     name varchar(100) NOT NULL,
     position int NOT NULL,
-    permissions int NOT NULL,
+    permissions int NOT NULL
 );
 
 /* Represents a role a member has. */
@@ -73,5 +73,5 @@ CREATE TABLE bans (
     user_id text NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
     reason varchar(500),
-    PRIMARY KEY (user_id, guild_id),
+    PRIMARY KEY (user_id, guild_id)
 );
