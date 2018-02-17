@@ -17,7 +17,7 @@ END; $$
 LANGUAGE PLPGSQL;
 
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     /* Basic user information */
     id text PRIMARY KEY NOT NULL,
     username varchar(32) NOT NULL,
@@ -37,7 +37,16 @@ CREATE TABLE users (
     password_salt text NOT NULL
 );
 
-CREATE TABLE guilds (
+CREATE TABLE IF NOT EXISTS channels (
+    id text PRIMARY KEY NOT NULL,
+    channel_type int NOT NULL,
+    name varchar(100) NOT NULL,
+    position int NOT NULL,
+    topic varchar(1024)
+);
+
+
+CREATE TABLE IF NOT EXISTS guilds (
     id text PRIMARY KEY NOT NULL,
     name varchar(100) NOT NULL,
     icon text,
@@ -54,16 +63,19 @@ CREATE TABLE guilds (
     mfa_level int DEFAULT 0,
 
     embed_enabled boolean DEFAULT false,
-    embed_channel_id text REFERENCES channels (id),
+    embed_channel_id text REFERENCES channels (id) DEFAULT NULL,
 
     widget_enabled boolean DEFAULT false,
-    widget_channel_id text REFERENCES channels (id),
+    widget_channel_id text REFERENCES channels (id) DEFAULT NULL,
 
-    system_channel_id text REFERENCES channels (id),
+    system_channel_id text REFERENCES channels (id) DEFAULT NULL,
     features text /* JSON encoded data, like "[\"VANITY_URL\"]" */
 );
 
-CREATE TABLE members (
+ALTER TABLE channels ADD COLUMN
+    guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE;
+
+CREATE TABLE IF NOT EXISTS members (
     user_id text NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
     nickname varchar(100),
@@ -71,16 +83,7 @@ CREATE TABLE members (
     PRIMARY KEY (user_id, guild_id)
 );
 
-CREATE TABLE channels (
-    id text PRIMARY KEY NOT NULL,
-    guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
-    channel_type int NOT NULL,
-    name varchar(100) NOT NULL,
-    position int NOT NULL,
-    topic varchar(1024)
-);
-
-CREATE TABLE roles (
+CREATE TABLE IF NOT EXISTS roles (
     id text PRIMARY KEY NOT NULL,
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
     name varchar(100) NOT NULL,
@@ -89,14 +92,14 @@ CREATE TABLE roles (
 );
 
 /* Represents a role a member has. */
-CREATE TABLE member_roles (
+CREATE TABLE IF NOT EXISTS member_roles (
     user_id text NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
     role_id text NOT NULL REFERENCES roles (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, guild_id, role_id)
 );
 
-CREATE TABLE bans (
+CREATE TABLE IF NOT EXISTS bans (
     user_id text NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
     reason varchar(500),
