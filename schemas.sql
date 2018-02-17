@@ -1,3 +1,22 @@
+-- Thank you FrostLuma for giving those functions
+-- convert Discord snowflake to timestamp
+CREATE OR REPLACE FUNCTION snowflake_time (snowflake BIGINT)
+    RETURNS TIMESTAMP AS $$
+BEGIN
+    RETURN to_timestamp(((snowflake >> 22) + 1420070400000) / 1000);
+END; $$
+LANGUAGE PLPGSQL;
+
+
+-- convert timestamp to Discord snowflake
+CREATE OR REPLACE FUNCTION time_snowflake (date TIMESTAMP WITH TIME ZONE)
+    RETURNS BIGINT AS $$
+BEGIN
+    RETURN CAST(EXTRACT(epoch FROM date) * 1000 - 1420070400000 AS BIGINT) << 22;
+END; $$
+LANGUAGE PLPGSQL;
+
+
 CREATE TABLE users (
     /* Basic user information */
     id text PRIMARY KEY NOT NULL,
@@ -33,7 +52,14 @@ CREATE TABLE guilds (
     default_message_notifications int,
     explicit_content_filter int DEFAULT 0, /* goes from 0-2 */
     mfa_level int DEFAULT 0,
- 
+
+    embed_enabled boolean DEFAULT false,
+    embed_channel_id text REFERENCES channels (id),
+
+    widget_enabled boolean DEFAULT false,
+    widget_channel_id text REFERENCES channels (id),
+
+    system_channel_id text REFERENCES channels (id),
     features text /* JSON encoded data, like "[\"VANITY_URL\"]" */
 );
 
@@ -41,6 +67,7 @@ CREATE TABLE members (
     user_id text NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
     nickname varchar(100),
+    joined_at timestamp without time zone default now(),
     PRIMARY KEY (user_id, guild_id)
 );
 
