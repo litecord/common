@@ -1,3 +1,7 @@
+/*
+ Litecord schema file
+ */
+
 -- Thank you FrostLuma for giving those functions
 -- convert Discord snowflake to timestamp
 CREATE OR REPLACE FUNCTION snowflake_time (snowflake BIGINT)
