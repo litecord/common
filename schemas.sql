@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS users (
     password_salt text NOT NULL
 );
 
+
 CREATE TABLE IF NOT EXISTS channels (
     id text PRIMARY KEY NOT NULL,
     channel_type int NOT NULL,
@@ -53,17 +54,30 @@ CREATE TABLE IF NOT EXISTS channels (
 CREATE TABLE IF NOT EXISTS guilds (
     id text PRIMARY KEY NOT NULL,
     name varchar(100) NOT NULL,
-    icon text,
-    splash text,
+    icon text DEFAULT NULL,
+    splash text DEFAULT NULL,
     owner_id text NOT NULL REFERENCES users (id),
 
     region text NOT NULL,
-    afk_channel_id text,
-    afk_timeout int,
+
+    /* default no afk channel 
+        afk channel is voice-only.
+     */
+    afk_channel_id text REFERENCES channels (id) DEFAULT NULL,
+
+    /* default 5 minutes */
+    afk_timeout int DEFAULT 300,
     
+    -- from 0 to 4
     verification_level int DEFAULT 0,
-    default_message_notifications int,
-    explicit_content_filter int DEFAULT 0, /* goes from 0-2 */
+
+    -- from 0 to 1
+    default_message_notifications int DEFAULT 0,
+
+    -- from 0 to 2
+    explicit_content_filter int DEFAULT 0,
+
+    -- ????
     mfa_level int DEFAULT 0,
 
     embed_enabled boolean DEFAULT false,
@@ -73,16 +87,20 @@ CREATE TABLE IF NOT EXISTS guilds (
     widget_channel_id text REFERENCES channels (id) DEFAULT NULL,
 
     system_channel_id text REFERENCES channels (id) DEFAULT NULL,
-    features text /* JSON encoded data, like "[\"VANITY_URL\"]" */
+
+    /* JSON encoded data, like "[\"VANITY_URL\"]" */
+    features text DEFAULT "[]"
 );
+
 
 ALTER TABLE channels ADD COLUMN
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE;
 
+
 CREATE TABLE IF NOT EXISTS members (
     user_id text NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
-    nickname varchar(100),
+    nickname varchar(100) DEFAULT "",
     joined_at timestamp without time zone default now(),
     PRIMARY KEY (user_id, guild_id)
 );
