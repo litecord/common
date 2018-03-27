@@ -58,6 +58,8 @@ python3.6 -m venv env
 env/bin/python -m pip install -Ur requirements.txt
 ```
 
+Edit `lconfig.py` with accordingly (Usually just change `pgargs`).
+
 ## Running `rest-py`
 
 ```bash
