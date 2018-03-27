@@ -100,7 +100,7 @@ ALTER TABLE channels ADD COLUMN
 CREATE TABLE IF NOT EXISTS members (
     user_id text NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
-    nickname varchar(100) DEFAULT "",
+    nickname varchar(100) DEFAULT NULL,
     joined_at timestamp without time zone default now(),
     PRIMARY KEY (user_id, guild_id)
 );
@@ -126,4 +126,10 @@ CREATE TABLE IF NOT EXISTS bans (
     guild_id text NOT NULL REFERENCES guilds (id) ON DELETE CASCADE,
     reason varchar(500),
     PRIMARY KEY (user_id, guild_id)
+);
+
+CREATE TABLE IF NOT EXISTS notes (
+    user_id text NOT NULL REFERENCES users (id),
+    target_id text NOT NULL REFERENCES guilds (id),
+    note text
 );
