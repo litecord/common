@@ -63,3 +63,8 @@ env/bin/python -m pip install -Ur requirements.txt
 ```bash
 env/bin/python run.py
 ```
+
+## Post-installation notes
+
+A general rule of thumb is running `gateway` before `rest-py`(or any rest component).
+Running `rest-py` before `gateway` will make `rest-py` try to reconnect with gateway.
