@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS guilds (
     system_channel_id text REFERENCES channels (id) DEFAULT NULL,
 
     /* JSON encoded data, like "[\"VANITY_URL\"]" */
-    features text DEFAULT "[]"
+    features text DEFAULT '[]'
 );
 
 
